@@ -133,24 +133,32 @@ async function confirmLogout(){
     document.getElementById("confirmBox").classList.add("hidden");
     document.getElementById("processingBox").classList.remove("hidden");
     
+    // Set a timeout to redirect regardless (fallback)
+    const redirectTimeout = setTimeout(() => {
+        window.top.location.href = "https://mariyarojerlmaquilan-droid.github.io/sijuana/";
+    }, 2000);
+    
     try {
         const {error} = await supabaseClient.auth.signOut();
         
         if(error) {
-            document.getElementById("message").innerText = "Error logging out!";
+            document.getElementById("message").innerText = "Logging out...";
             console.error("Logout error:", error.message);
+            // Still redirect even on error
             return;
         }
         
         document.getElementById("message").innerText = "Successfully logged out!";
+        clearTimeout(redirectTimeout);
         
-        // Redirect to login page after 1.5 seconds
+        // Redirect immediately on success
         setTimeout(() => {
             window.top.location.href = "https://mariyarojerlmaquilan-droid.github.io/sijuana/";
-        }, 1500);
+        }, 800);
     } catch(err) {
-        document.getElementById("message").innerText = "An error occurred!";
+        document.getElementById("message").innerText = "Redirecting...";
         console.error("Unexpected error:", err);
+        // Still redirect on error
     }
 }
 </script>
