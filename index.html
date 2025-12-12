@@ -84,7 +84,16 @@ async function signUp(){
         return; 
     }
 
-    const {data,error}=await supabaseClient.auth.signUp({email,password});
+    const {data,error}=await supabaseClient.auth.signUp({
+        email,
+        password,
+        options:{
+            data:{
+                fullname:fullname,
+                phone:phone
+            }
+        }
+    });
     if(error){ 
         document.getElementById("signupError").innerText=error.message; 
         setLoading(btn,false,"Create Account"); 
