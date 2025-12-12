@@ -7,17 +7,120 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body { font-family: Arial, sans-serif; margin:0; background:#c3aab6; }
-.box {
-    max-width:350px; margin:80px auto; background:white; padding:25px; border-radius:8px;
-    text-align:center; box-shadow:0 0 10px rgba(0,0,0,0.15);
+* { margin:0; padding:0; box-sizing:border-box; }
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
 }
-input { width:90%; padding:12px; margin:10px 0; border:1px solid #ccc; border-radius:6px; }
-button { width:100%; padding:12px; background:#333; color:white; border:none; border-radius:6px; cursor:pointer; }
-button:hover { background:#c3aab6; color:#333; }
-.link { margin-top:10px; font-size:14px; }
-.error { color:red; font-size:14px; }
-.success { background:#4caf50; color:white; padding:12px; margin-bottom:15px; border-radius:5px; display:none; text-align:center; }
+.box {
+    max-width:420px; 
+    width:100%;
+    background:white; 
+    padding:40px; 
+    border-radius:15px;
+    text-align:center; 
+    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    animation:slideIn 0.4s ease-out;
+}
+@keyframes slideIn {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+}
+h2 { 
+    color:#333; 
+    margin-bottom:30px;
+    font-size:28px;
+    font-weight:600;
+}
+input { 
+    width:100%; 
+    padding:14px 16px; 
+    margin:12px 0; 
+    border:2px solid #e0e0e0; 
+    border-radius:8px;
+    font-size:15px;
+    transition:all 0.3s ease;
+    font-family:inherit;
+}
+input:focus { 
+    outline:none;
+    border-color:#667eea;
+    box-shadow:0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+input::placeholder {
+    color:#999;
+}
+button { 
+    width:100%; 
+    padding:14px; 
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color:white; 
+    border:none; 
+    border-radius:8px; 
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    transition:all 0.3s ease;
+    margin-top:8px;
+}
+button:hover { 
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(102, 126, 234, 0.4);
+}
+button:active {
+    transform:translateY(0);
+}
+button:disabled {
+    opacity:0.6;
+    cursor:not-allowed;
+}
+.link { 
+    margin-top:20px; 
+    font-size:14px;
+    color:#666;
+}
+.link a {
+    color:#667eea;
+    text-decoration:none;
+    font-weight:600;
+    cursor:pointer;
+    transition:color 0.3s ease;
+}
+.link a:hover {
+    color:#764ba2;
+    text-decoration:underline;
+}
+.error { 
+    color:#e74c3c; 
+    font-size:13px;
+    margin-top:10px;
+    padding:10px;
+    background:#fadbd8;
+    border-radius:6px;
+    display:none;
+}
+.error:not(:empty) {
+    display:block;
+}
+.success { 
+    background:linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    color:white; 
+    padding:14px; 
+    margin-bottom:20px; 
+    border-radius:8px; 
+    display:none; 
+    text-align:center;
+    font-weight:600;
+    animation:slideIn 0.4s ease-out;
+}
+.success:not(:empty) {
+    display:block;
+}
 </style>
 </head>
 
@@ -33,16 +136,18 @@ button:hover { background:#c3aab6; color:#333; }
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
     <p id="loginError" class="error"></p>
-    <p class="link">No account? <a href="#" onclick="showSignUp()">Sign Up</a></p>
+    <p class="link">No account? <a href="#" onclick="showRegister()">Register</a></p>
 </div>
 
-<!-- SIGN UP BOX -->
-<div id="signupBox" class="box" style="display:none;">
-    <h2>Sign Up</h2>
+<!-- REGISTER BOX -->
+<div id="registerBox" class="box" style="display:none;">
+    <h2>Register</h2>
+    <input id="newFullname" type="text" placeholder="Full Name">
+    <input id="newPhone" type="tel" placeholder="Phone Number">
     <input id="newUser" type="email" placeholder="Email">
     <input id="newPass" type="password" placeholder="Password">
-    <button onclick="signUp()">Create Account</button>
-    <p id="signupError" class="error"></p>
+    <button onclick="register()">Create Account</button>
+    <p id="registerError" class="error"></p>
     <p class="link">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
 </div>
 
@@ -57,36 +162,47 @@ const HOME_PAGE = "https://sites.google.com/view/sijuana/home/";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Toggle Boxes
-function showSignUp(){ document.getElementById("signupBox").style.display="block"; document.getElementById("loginBox").style.display="none"; }
-function showLogin(){ document.getElementById("signupBox").style.display="none"; document.getElementById("loginBox").style.display="block"; }
+function showRegister(){ document.getElementById("registerBox").style.display="block"; document.getElementById("loginBox").style.display="none"; }
+function showLogin(){ document.getElementById("registerBox").style.display="none"; document.getElementById("loginBox").style.display="block"; }
 
 // Loading effect
 function setLoading(btn,isLoading,text){ btn.disabled=isLoading; btn.innerText=isLoading?"Please wait...":text; }
 
-// Sign Up
-async function signUp(){
+// Register
+async function register(){
+    let fullname=document.getElementById("newFullname").value;
+    let phone=document.getElementById("newPhone").value;
     let email=document.getElementById("newUser").value;
     let password=document.getElementById("newPass").value;
-    let btn=document.querySelector("#signupBox button");
+    let btn=document.querySelector("#registerBox button");
     setLoading(btn,true,"Create Account");
 
-    if(!email||!password){ 
-        document.getElementById("signupError").innerText="Fill all fields"; 
+    if(!fullname||!phone||!email||!password){ 
+        document.getElementById("registerError").innerText="Fill all fields"; 
         setLoading(btn,false,"Create Account"); 
         return; 
     }
 
-    const {data,error}=await supabaseClient.auth.signUp({email,password});
+    const {data,error}=await supabaseClient.auth.signUp({
+        email,
+        password,
+        options:{
+            data:{
+                fullname:fullname,
+                phone:phone
+            }
+        }
+    });
     if(error){ 
-        document.getElementById("signupError").innerText=error.message; 
+        document.getElementById("registerError").innerText=error.message; 
         setLoading(btn,false,"Create Account"); 
         return; 
     }
 
-    document.getElementById("signupError").innerText="";
-    document.getElementById("successMessage").innerText="Account created!";
+    document.getElementById("registerError").innerText="";
+    document.getElementById("successMessage").innerText="Account created! Please check your email to confirm.";
     document.getElementById("successMessage").style.display="block";
-    setTimeout(()=>{ document.getElementById("successMessage").style.display="none"; showLogin(); },1500);
+    setTimeout(()=>{ document.getElementById("successMessage").style.display="none"; showLogin(); },2000);
     setLoading(btn,false,"Create Account");
 }
 
