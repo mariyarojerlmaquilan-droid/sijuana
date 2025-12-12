@@ -132,33 +132,41 @@ async function confirmLogout(){
     // Show processing state
     document.getElementById("confirmBox").classList.add("hidden");
     document.getElementById("processingBox").classList.remove("hidden");
-    
-    // Set a timeout to redirect regardless (fallback)
+
+    // Always redirect after a short timeout as a fallback
+    const FALLBACK_REDIRECT = "https://mariyarojerlmaquilan-droid.github.io/sijuana/";
     const redirectTimeout = setTimeout(() => {
-        window.top.location.href = "https://mariyarojerlmaquilan-droid.github.io/sijuana/";
+        // best-effort localStorage cleanup before redirect
+        try { localStorage.removeItem('supabase.auth.token'); } catch(e){}
+        try { localStorage.removeItem('sb:token'); } catch(e){}
+        window.top.location.href = FALLBACK_REDIRECT;
     }, 2000);
-    
+
     try {
         const {error} = await supabaseClient.auth.signOut();
-        
+
+        // Regardless of signOut result, remove Supabase token keys (best-effort)
+        try { localStorage.removeItem('supabase.auth.token'); } catch(e){}
+        try { localStorage.removeItem('sb:token'); } catch(e){}
+
         if(error) {
             document.getElementById("message").innerText = "Logging out...";
             console.error("Logout error:", error.message);
-            // Still redirect even on error
+            // Let the fallback redirect run
             return;
         }
-        
+
         document.getElementById("message").innerText = "Successfully logged out!";
         clearTimeout(redirectTimeout);
-        
+
         // Redirect immediately on success
         setTimeout(() => {
-            window.top.location.href = "https://mariyarojerlmaquilan-droid.github.io/sijuana/";
+            window.top.location.href = FALLBACK_REDIRECT;
         }, 800);
     } catch(err) {
         document.getElementById("message").innerText = "Redirecting...";
         console.error("Unexpected error:", err);
-        // Still redirect on error
+        // fallback redirect will still run
     }
 }
 </script>
