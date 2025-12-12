@@ -25,6 +25,11 @@ button:hover { background:#c3aab6; color:#333; }
 
 <div id="successMessage" class="success"></div>
 
+<!-- Embedded notice (shown when page is inside an iframe) -->
+<div id="embeddedNotice" style="display:none;background:#fff3cd;border:1px solid #ffeeba;color:#856404;padding:10px;margin:10px auto;max-width:420px;border-radius:6px;text-align:center;">
+    This page is embedded. <a id="embeddedOpenLink" href="https://sites.google.com/view/sijuana/home/" target="_top">Open site in full window</a>
+</div>
+
 <!-- LOGIN BOX -->
 <div id="loginBox" class="box">
     <h2>Login</h2>
@@ -38,6 +43,8 @@ button:hover { background:#c3aab6; color:#333; }
 <!-- SIGN UP BOX -->
 <div id="signupBox" class="box" style="display:none;">
     <h2>Sign Up</h2>
+    <input id="newFullname" type="text" placeholder="Full Name">
+    <input id="newPhone" type="tel" placeholder="Phone Number">
     <input id="newUser" type="email" placeholder="Email">
     <input id="newPass" type="password" placeholder="Password">
     <button onclick="signUp()">Create Account</button>
@@ -64,12 +71,14 @@ function setLoading(btn,isLoading,text){ btn.disabled=isLoading; btn.innerText=i
 
 // Sign Up
 async function signUp(){
+    let fullname=document.getElementById("newFullname").value;
+    let phone=document.getElementById("newPhone").value;
     let email=document.getElementById("newUser").value;
     let password=document.getElementById("newPass").value;
     let btn=document.querySelector("#signupBox button");
     setLoading(btn,true,"Create Account");
 
-    if(!email||!password){ 
+    if(!fullname||!phone||!email||!password){ 
         document.getElementById("signupError").innerText="Fill all fields"; 
         setLoading(btn,false,"Create Account"); 
         return; 
@@ -118,6 +127,12 @@ supabaseClient.auth.getSession().then(({data})=>{
         window.top.location.href = HOME_PAGE;
     }
 });
+
+// If embedded (inside an iframe), show a small notice with a top-level link
+if (window.top !== window.self) {
+    const note = document.getElementById('embeddedNotice');
+    if (note) note.style.display = 'block';
+}
 </script>
 
 </body>
