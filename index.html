@@ -232,6 +232,15 @@ async function login(){
 // Auto-check session
 supabaseClient.auth.getSession().then(({data})=>{
     if(data.session){
+        // If a one-time skip flag is set, clear it and do not redirect.
+        try{
+            const skip = localStorage.getItem('skip_auto_redirect');
+            if(skip){
+                localStorage.removeItem('skip_auto_redirect');
+                return;
+            }
+        }catch(e){}
+
         // Only auto-redirect when the page is not embedded.
         if(window.top === window.self){
             window.top.location.href = HOME_PAGE;
@@ -245,9 +254,7 @@ supabaseClient.auth.getSession().then(({data})=>{
             banner.innerHTML = 'You are already logged in. <a href="' + HOME_PAGE + '" target="_top" style="color:#0b5fff;text-decoration:underline;margin-left:8px;">Open site</a>';
             document.body.appendChild(banner);
             setTimeout(()=>{ banner.style.opacity='0'; banner.style.transition='opacity 0.4s'; setTimeout(()=>banner.remove(),1200); }, 8000);
-        }catch(e){
-            // ignore
-        }
+        }catch(e){}
     }
 });
 </script>

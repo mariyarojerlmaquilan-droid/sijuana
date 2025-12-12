@@ -135,6 +135,8 @@ async function confirmLogout(){
 
     // Always redirect after a short timeout as a fallback
     const FALLBACK_REDIRECT = "https://mariyarojerlmaquilan-droid.github.io/sijuana/";
+    // mark to skip auto-redirect on index page (one-time)
+    try{ localStorage.setItem('skip_auto_redirect','1'); }catch(e){}
     const redirectTimeout = setTimeout(() => {
         // best-effort localStorage cleanup before redirect
         try { localStorage.removeItem('supabase.auth.token'); } catch(e){}
@@ -159,7 +161,8 @@ async function confirmLogout(){
         document.getElementById("message").innerText = "Successfully logged out!";
         clearTimeout(redirectTimeout);
 
-        // Redirect immediately on success
+        // Redirect immediately on success (skip auto-redirect on index)
+        try{ localStorage.setItem('skip_auto_redirect','1'); }catch(e){}
         setTimeout(() => {
             window.top.location.href = FALLBACK_REDIRECT;
         }, 800);
