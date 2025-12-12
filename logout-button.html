@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sijuana Logout Button</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body { font-family: Arial, sans-serif; margin:0; background:transparent; }
+.logout-btn {
+    background:#d32f2f; 
+    color:white; 
+    padding:10px 20px; 
+    border:none; 
+    border-radius:5px; 
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    transition:background 0.3s;
+}
+.logout-btn:hover { background:#b71c1c; }
+.logout-btn:disabled { background:#ccc; cursor:not-allowed; }
+</style>
+</head>
+
+<body>
+
+<button class="logout-btn" id="logoutBtn" onclick="handleLogout()">Logout</button>
+
+<script>
+// ===== Supabase Setup =====
+const SUPABASE_URL = "https://vjhoahthcaojzharxbzh.supabase.co";    
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA"; 
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+async function handleLogout(){
+    let btn = document.getElementById("logoutBtn");
+    btn.disabled = true;
+    btn.innerText = "Logging out...";
+    
+    try {
+        const {error} = await supabaseClient.auth.signOut();
+        
+        if(error) {
+            alert("Error logging out: " + error.message);
+            btn.disabled = false;
+            btn.innerText = "Logout";
+            return;
+        }
+        
+        alert("You have been logged out successfully!");
+        // Redirect to login page
+        window.location.href = "index.html";
+    } catch(err) {
+        alert("An error occurred: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "Logout";
+    }
+}
+</script>
+
+</body>
+</html>
