@@ -220,6 +220,18 @@ async function login(){
         return; 
     }
 
+    // Retrieve user metadata (fullname, phone)
+    const user = data.user;
+    console.log('Login successful!');
+    console.log('User ID:', user.id);
+    console.log('User Email:', user.email);
+    console.log('User Metadata:', user.user_metadata);
+    
+    if(user.user_metadata){
+        console.log('Full Name:', user.user_metadata.fullname);
+        console.log('Phone:', user.user_metadata.phone);
+    }
+
     setLoading(btn,false,"Login");
     document.getElementById("loginError").innerText="";
     document.getElementById("successMessage").innerText="Welcome! Login successful!";
