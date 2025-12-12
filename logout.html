@@ -13,16 +13,29 @@ body { font-family: Arial, sans-serif; margin:0; background:#c3aab6; display:fle
     text-align:center; box-shadow:0 0 10px rgba(0,0,0,0.15);
 }
 h2 { color:#333; margin-top:0; }
-.loading { color:#666; font-size:16px; }
 .message { margin-top:20px; color:#4caf50; font-weight:bold; }
+.logout-btn {
+    background:#d32f2f; 
+    color:white; 
+    padding:12px 30px; 
+    border:none; 
+    border-radius:6px; 
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    transition:background 0.3s;
+    width:90%;
+}
+.logout-btn:hover { background:#b71c1c; }
+.logout-btn:disabled { background:#ccc; cursor:not-allowed; }
 </style>
 </head>
 
 <body>
 
 <div class="box">
-    <h2>Logging out...</h2>
-    <p class="loading">Please wait while we sign you out.</p>
+    <h2>Logout</h2>
+    <button class="logout-btn" id="logoutBtn" onclick="handleLogout()">Logout</button>
     <p class="message" id="message"></p>
 </div>
 
@@ -31,33 +44,42 @@ h2 { color:#333; margin-top:0; }
 const SUPABASE_URL = "https://vjhoahthcaojzharxbzh.supabase.co";    
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA"; 
 
+// Redirect to siijuana after logout
+const REDIRECT_URL = "https://sites.google.com/view/siijuana/login-or-register";
+
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Logout function
-async function logout(){
+async function handleLogout(){
+    let btn = document.getElementById("logoutBtn");
+    btn.disabled = true;
+    btn.innerText = "Logging out...";
+    
     try {
         const {error} = await supabaseClient.auth.signOut();
         
         if(error) {
             document.getElementById("message").innerText = "Error logging out!";
             console.error("Logout error:", error.message);
+            btn.disabled = false;
+            btn.innerText = "Logout";
             return;
         }
         
         document.getElementById("message").innerText = "Successfully logged out!";
+        btn.innerText = "Logged out";
         
-        // Redirect to login page after 1 second
+        // Redirect to siijuana login page after 1 second
         setTimeout(() => {
-            window.top.location.href = "index.html";
+            window.top.location.href = REDIRECT_URL;
         }, 1000);
     } catch(err) {
         document.getElementById("message").innerText = "An error occurred!";
         console.error("Unexpected error:", err);
+        btn.disabled = false;
+        btn.innerText = "Logout";
     }
 }
-
-// Execute logout when page loads
-logout();
 </script>
 
 </body>
