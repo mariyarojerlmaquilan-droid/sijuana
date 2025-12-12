@@ -232,7 +232,22 @@ async function login(){
 // Auto-check session
 supabaseClient.auth.getSession().then(({data})=>{
     if(data.session){
-        window.top.location.href = HOME_PAGE;
+        // Only auto-redirect when the page is not embedded.
+        if(window.top === window.self){
+            window.top.location.href = HOME_PAGE;
+            return;
+        }
+
+        // If embedded, show a small banner instructing user to open in full window.
+        try{
+            const banner = document.createElement('div');
+            banner.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#fff8c4;color:#856404;padding:10px 14px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.15);z-index:9999;font-weight:600;font-family:inherit;';
+            banner.innerHTML = 'You are already logged in. <a href="' + HOME_PAGE + '" target="_top" style="color:#0b5fff;text-decoration:underline;margin-left:8px;">Open site</a>';
+            document.body.appendChild(banner);
+            setTimeout(()=>{ banner.style.opacity='0'; banner.style.transition='opacity 0.4s'; setTimeout(()=>banner.remove(),1200); }, 8000);
+        }catch(e){
+            // ignore
+        }
     }
 });
 </script>
