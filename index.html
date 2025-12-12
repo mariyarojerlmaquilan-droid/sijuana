@@ -183,26 +183,43 @@ async function register(){
         return; 
     }
 
-    const {data,error}=await supabaseClient.auth.signUp({
+    // 1. Create user in Supabase auth and store metadata
+    const {data, error} = await supabaseClient.auth.signUp({
         email,
         password,
         options:{
             data:{
-                fullname:fullname,
-                phone:phone
+                fullname: fullname,
+                phone: phone
             }
         }
     });
+
     if(error){ 
-        document.getElementById("registerError").innerText=error.message; 
+        document.getElementById("registerError").innerText = error.message; 
         setLoading(btn,false,"Create Account"); 
         return; 
+    }
+
+    // 2. Insert user into "profiles" table
+    if (data.user) {
+        await supabaseClient.from("profiles").insert({
+            id: data.user.id,
+            fullname: fullname,
+            phone: phone,
+            email: email
+        });
     }
 
     document.getElementById("registerError").innerText="";
     document.getElementById("successMessage").innerText="Account created! Please check your email to confirm.";
     document.getElementById("successMessage").style.display="block";
-    setTimeout(()=>{ document.getElementById("successMessage").style.display="none"; showLogin(); },2000);
+
+    setTimeout(()=>{
+        document.getElementById("successMessage").style.display="none";
+        showLogin();
+    },2000);
+
     setLoading(btn,false,"Create Account");
 }
 
