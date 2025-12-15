@@ -109,4 +109,140 @@ button:disabled {
     display:block;
 }
 .success { 
-    background:#ffb3b9; /* soft pink su*
+    background:#ffb3b9; /* soft pink success */
+    color:white; 
+    padding:12px; 
+    margin-bottom:20px; 
+    border-radius:8px; 
+    display:none; 
+    text-align:center;
+    font-weight:600;
+    animation:slideIn 0.4s ease-out;
+}
+.success:not(:empty) {
+    display:block;
+}
+</style>
+</head>
+
+<body>
+
+<div id="successMessage" class="success"></div>
+
+<!-- LOGIN BOX -->
+<div id="loginBox" class="box">
+    <h2>Login</h2>
+    <input id="loginUser" type="email" placeholder="Email">
+    <input id="loginPass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginError" class="error"></p>
+    <p class="link">No account? <a href="#" onclick="showRegister()">Register</a></p>
+</div>
+
+<!-- REGISTER BOX -->
+<div id="registerBox" class="box" style="display:none;">
+    <h2>Register</h2>
+    <input id="newFullname" type="text" placeholder="Full Name">
+    <input id="newPhone" type="tel" placeholder="Phone Number">
+    <input id="newUser" type="email" placeholder="Email">
+    <input id="newPass" type="password" placeholder="Password">
+    <button onclick="register()">Create Account</button>
+    <p id="registerError" class="error"></p>
+    <p class="link">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+</div>
+
+<script>
+// ===== Supabase Setup =====
+const SUPABASE_URL = "https://vjhoahthcaojzharxbzh.supabase.co";    
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA"; 
+
+const HOME_PAGE = "https://sites.google.com/view/sijuana/home/";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function showRegister(){ document.getElementById("registerBox").style.display="block"; document.getElementById("loginBox").style.display="none"; }
+function showLogin(){ document.getElementById("registerBox").style.display="none"; document.getElementById("loginBox").style.display="block"; }
+function setLoading(btn,isLoading,text){ btn.disabled=isLoading; btn.innerText=isLoading?"Please wait...":text; }
+
+async function register(){
+    let fullname=document.getElementById("newFullname").value;
+    let phone=document.getElementById("newPhone").value;
+    let email=document.getElementById("newUser").value;
+    let password=document.getElementById("newPass").value;
+    let btn=document.querySelector("#registerBox button");
+    setLoading(btn,true,"Create Account");
+
+    if(!fullname||!phone||!email||!password){ 
+        document.getElementById("registerError").innerText="Fill all fields"; 
+        setLoading(btn,false,"Create Account"); 
+        return; 
+    }
+
+    const {data, error} = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options:{data:{fullname: fullname, phone: phone}}
+    });
+
+    if(error){ 
+        document.getElementById("registerError").innerText = error.message; 
+        setLoading(btn,false,"Create Account"); 
+        return; 
+    }
+
+    if (data.user) {
+        await supabaseClient.from("profiles").insert({
+            id: data.user.id,
+            fullname: fullname,
+            phone: phone,
+            email: email
+        });
+    }
+
+    document.getElementById("registerError").innerText="";
+    document.getElementById("successMessage").innerText="Account created! Please check your email to confirm.";
+    document.getElementById("successMessage").style.display="block";
+
+    setTimeout(()=>{
+        document.getElementById("successMessage").style.display="none";
+        showLogin();
+    },2000);
+
+    setLoading(btn,false,"Create Account");
+}
+
+async function login(){
+    let email=document.getElementById("loginUser").value;
+    let password=document.getElementById("loginPass").value;
+    let btn=document.querySelector("#loginBox button");
+    setLoading(btn,true,"Login");
+
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+    if(error){ 
+        document.getElementById("loginError").innerText=error.message; 
+        setLoading(btn,false,"Login"); 
+        return; 
+    }
+
+    const user = data.user;
+    setLoading(btn,false,"Login");
+    document.getElementById("loginError").innerText="";
+    document.getElementById("successMessage").innerText="Welcome! Login successful!";
+    document.getElementById("successMessage").style.display="block";
+
+    setTimeout(()=>{ window.top.location.href = HOME_PAGE; },1000);
+}
+
+supabaseClient.auth.getSession().then(({data})=>{
+    if(data.session){
+        try{
+            const skip = localStorage.getItem('skip_auto_redirect');
+            if(skip){ localStorage.removeItem('skip_auto_redirect'); return; }
+        }catch(e){}
+        if(window.top === window.self){ window.top.location.href = HOME_PAGE; return; }
+    }
+});
+</script>
+
+</body>
+</html>
