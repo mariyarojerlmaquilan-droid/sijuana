@@ -122,9 +122,9 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Cancel logout: redirect to login/register page
+// Cancel logout: redirect to homepage
 function cancelLogout(){
-    window.top.location.href = "https://sites.google.com/view/sijuana/login-or-register";
+    window.top.location.href = "https://sites.google.com/view/sijuana/home";
 }
 
 // Confirm logout
@@ -132,7 +132,7 @@ async function confirmLogout(){
     document.getElementById("confirmBox").classList.add("hidden");
     document.getElementById("processingBox").classList.remove("hidden");
 
-    const FALLBACK_REDIRECT = "https://sites.google.com/view/siijuana/login-or-register";
+    const FALLBACK_REDIRECT = "https://sites.google.com/view/sijuana/home";
     try{ localStorage.setItem('skip_auto_redirect','1'); }catch(e){}
     const redirectTimeout = setTimeout(() => {
         try { localStorage.removeItem('supabase.auth.token'); } catch(e){}
