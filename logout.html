@@ -10,7 +10,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background:#f5f5f5; /* soft gray background */
     display:flex;
     justify-content:center;
     align-items:center;
@@ -20,11 +20,11 @@ body {
 .box {
     max-width:400px;
     width:100%;
-    background:white;
+    background:#ffffff;
     padding:40px;
-    border-radius:15px;
+    border-radius:12px;
     text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    box-shadow:0 10px 30px rgba(0,0,0,0.08); /* softer shadow */
     animation:slideIn 0.4s ease-out;
 }
 @keyframes slideIn {
@@ -35,7 +35,7 @@ h2 {
     color:#333;
     margin-top:0;
     margin-bottom:20px;
-    font-size:28px;
+    font-size:26px;
     font-weight:600;
 }
 .loading { 
@@ -45,7 +45,7 @@ h2 {
 }
 .message { 
     margin-top:20px;
-    color:#27ae60;
+    color:#ff99a1; /* soft pink for success message */
     font-weight:600;
     font-size:15px;
     min-height:20px;
@@ -57,7 +57,7 @@ h2 {
 }
 button {
     flex:1;
-    padding:14px;
+    padding:12px;
     border:none;
     border-radius:8px;
     cursor:pointer;
@@ -66,15 +66,15 @@ button {
     transition:all 0.3s ease;
 }
 .logout-btn {
-    background:linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    background:#ff99a1; /* soft pink button */
     color:white;
 }
 .logout-btn:hover {
-    transform:translateY(-2px);
-    box-shadow:0 10px 25px rgba(231, 76, 60, 0.4);
+    background:#ff8088; /* slightly darker pink */
+    box-shadow:0 6px 18px rgba(255,128,136,0.25);
 }
 .cancel-btn {
-    background:#e0e0e0;
+    background:#e0e0e0; /* gray cancel button */
     color:#333;
 }
 .cancel-btn:hover {
@@ -122,23 +122,19 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Cancel logout
+// Cancel logout: redirect to login/register page
 function cancelLogout(){
-    window.history.back();
+    window.top.location.href = "https://sites.google.com/view/sijuana/login-or-register";
 }
 
 // Confirm logout
 async function confirmLogout(){
-    // Show processing state
     document.getElementById("confirmBox").classList.add("hidden");
     document.getElementById("processingBox").classList.remove("hidden");
 
-    // Always redirect after a short timeout as a fallback
-    const FALLBACK_REDIRECT = "https://mariyarojerlmaquilan-droid.github.io/sijuana/";
-    // mark to skip auto-redirect on index page (one-time)
+    const FALLBACK_REDIRECT = "https://sites.google.com/view/siijuana/login-or-register";
     try{ localStorage.setItem('skip_auto_redirect','1'); }catch(e){}
     const redirectTimeout = setTimeout(() => {
-        // best-effort localStorage cleanup before redirect
         try { localStorage.removeItem('supabase.auth.token'); } catch(e){}
         try { localStorage.removeItem('sb:token'); } catch(e){}
         window.top.location.href = FALLBACK_REDIRECT;
@@ -147,21 +143,18 @@ async function confirmLogout(){
     try {
         const {error} = await supabaseClient.auth.signOut();
 
-        // Regardless of signOut result, remove Supabase token keys (best-effort)
         try { localStorage.removeItem('supabase.auth.token'); } catch(e){}
         try { localStorage.removeItem('sb:token'); } catch(e){}
 
         if(error) {
             document.getElementById("message").innerText = "Logging out...";
             console.error("Logout error:", error.message);
-            // Let the fallback redirect run
             return;
         }
 
         document.getElementById("message").innerText = "Successfully logged out!";
         clearTimeout(redirectTimeout);
 
-        // Redirect immediately on success (skip auto-redirect on index)
         try{ localStorage.setItem('skip_auto_redirect','1'); }catch(e){}
         setTimeout(() => {
             window.top.location.href = FALLBACK_REDIRECT;
@@ -169,7 +162,6 @@ async function confirmLogout(){
     } catch(err) {
         document.getElementById("message").innerText = "Redirecting...";
         console.error("Unexpected error:", err);
-        // fallback redirect will still run
     }
 }
 </script>
