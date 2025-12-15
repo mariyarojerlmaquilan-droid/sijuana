@@ -10,7 +10,7 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background:linear-gradient(135deg, #ff9aa2 0%, #fcbad3 100%); /* soft pink gradient */
     min-height:100vh;
     display:flex;
     align-items:center;
@@ -24,7 +24,7 @@ body {
     padding:40px; 
     border-radius:15px;
     text-align:center; 
-    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    box-shadow:0 20px 60px rgba(0,0,0,0.2);
     animation:slideIn 0.4s ease-out;
 }
 @keyframes slideIn {
@@ -41,7 +41,7 @@ input {
     width:100%; 
     padding:14px 16px; 
     margin:12px 0; 
-    border:2px solid #e0e0e0; 
+    border:2px solid #e0d4d8; /* soft pinkish border */
     border-radius:8px;
     font-size:15px;
     transition:all 0.3s ease;
@@ -49,8 +49,8 @@ input {
 }
 input:focus { 
     outline:none;
-    border-color:#667eea;
-    box-shadow:0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color:#ff6f91; /* pink focus */
+    box-shadow:0 0 0 3px rgba(255, 111, 145, 0.15);
 }
 input::placeholder {
     color:#999;
@@ -58,7 +58,7 @@ input::placeholder {
 button { 
     width:100%; 
     padding:14px; 
-    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background:linear-gradient(135deg, #ff6f91 0%, #ff9aa2 100%); /* pink gradient button */
     color:white; 
     border:none; 
     border-radius:8px; 
@@ -70,7 +70,7 @@ button {
 }
 button:hover { 
     transform:translateY(-2px);
-    box-shadow:0 10px 25px rgba(102, 126, 234, 0.4);
+    box-shadow:0 10px 25px rgba(255, 111, 145, 0.4);
 }
 button:active {
     transform:translateY(0);
@@ -85,14 +85,14 @@ button:disabled {
     color:#666;
 }
 .link a {
-    color:#667eea;
+    color:#ff6f91;
     text-decoration:none;
     font-weight:600;
     cursor:pointer;
     transition:color 0.3s ease;
 }
 .link a:hover {
-    color:#764ba2;
+    color:#ff9aa2;
     text-decoration:underline;
 }
 .error { 
@@ -108,7 +108,7 @@ button:disabled {
     display:block;
 }
 .success { 
-    background:linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+    background:linear-gradient(135deg, #ff9aa2 0%, #ff6f91 100%);
     color:white; 
     padding:14px; 
     margin-bottom:20px; 
@@ -122,6 +122,7 @@ button:disabled {
     display:block;
 }
 </style>
+
 </head>
 
 <body>
