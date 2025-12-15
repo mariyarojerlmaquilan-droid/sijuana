@@ -11,7 +11,7 @@
 
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background: linear-gradient(135deg, #6b73ff 0%, #f6a5c0 100%);
+    background: #f7f7fb;
     min-height:100vh;
     display:flex;
     align-items:center;
@@ -24,21 +24,15 @@ body {
     width:100%;
     background:white; 
     padding:40px; 
-    border-radius:15px;
+    border-radius:12px;
     text-align:center; 
-    box-shadow:0 20px 60px rgba(0,0,0,0.25);
-    animation:slideIn 0.4s ease-out;
-}
-
-@keyframes slideIn {
-    from { opacity:0; transform:translateY(20px); }
-    to { opacity:1; transform:translateY(0); }
+    box-shadow:0 12px 30px rgba(0,0,0,0.08);
 }
 
 h2 { 
     color:#333; 
     margin-bottom:30px;
-    font-size:28px;
+    font-size:26px;
     font-weight:600;
 }
 
@@ -46,22 +40,21 @@ input {
     width:100%; 
     padding:14px 16px; 
     margin:12px 0; 
-    border:2px solid #e5e5e5; 
+    border:1px solid #ddd; 
     border-radius:8px;
     font-size:15px;
-    transition:all 0.3s ease;
 }
 
 input:focus { 
     outline:none;
-    border-color:#f08bb4;
-    box-shadow:0 0 0 3px rgba(240, 139, 180, 0.2);
+    border-color:#e8a2b8;
+    box-shadow:0 0 0 2px rgba(232, 162, 184, 0.25);
 }
 
 button { 
     width:100%; 
     padding:14px; 
-    background: linear-gradient(135deg, #6b73ff 0%, #f08bb4 100%);
+    background:#e8a2b8;
     color:white; 
     border:none; 
     border-radius:8px; 
@@ -72,8 +65,7 @@ button {
 }
 
 button:hover { 
-    transform:translateY(-2px);
-    box-shadow:0 10px 25px rgba(240, 139, 180, 0.45);
+    background:#dd8fa8;
 }
 
 .link { 
@@ -83,23 +75,21 @@ button:hover {
 }
 
 .link a {
-    color:#e76fa3;
+    color:#d87093;
     text-decoration:none;
     font-weight:600;
-    cursor:pointer;
 }
 
 .link a:hover {
-    color:#c94b83;
     text-decoration:underline;
 }
 
 .error { 
-    color:#b83260; 
+    color:#b8456b; 
     font-size:13px;
     margin-top:10px;
     padding:10px;
-    background:#fde2ea;
+    background:#fde9ef;
     border-radius:6px;
     display:none;
 }
@@ -109,13 +99,17 @@ button:hover {
 }
 
 .success { 
-    background: linear-gradient(135deg, #4fd1c5 0%, #38b2ac 100%);
+    background:#4caf93;
     color:white; 
     padding:14px; 
     margin-bottom:20px; 
     border-radius:8px; 
     display:none; 
     font-weight:600;
+}
+
+.success:not(:empty) {
+    display:block;
 }
 </style>
 </head>
@@ -150,18 +144,7 @@ const SUPABASE_ANON_KEY =
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA";
 
 const HOME_PAGE = "https://sites.google.com/view/sijuana/home/";
-
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-function showRegister(){
-    document.getElementById("registerBox").style.display="block";
-    document.getElementById("loginBox").style.display="none";
-}
-
-function showLogin(){
-    document.getElementById("registerBox").style.display="none";
-    document.getElementById("loginBox").style.display="block";
-}
 </script>
 
 </body>
