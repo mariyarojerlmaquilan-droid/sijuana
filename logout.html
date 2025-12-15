@@ -124,44 +124,35 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Cancel logout: redirect to homepage
 function cancelLogout(){
-    window.top.location.href = "https://sites.google.com/view/sijuana/home";
+    window.top.location.href = "https://sites.google.com/view/siijuana/home";
 }
 
-// Confirm logout
+// Confirm logout: sign out then redirect to homepage
 async function confirmLogout(){
     document.getElementById("confirmBox").classList.add("hidden");
     document.getElementById("processingBox").classList.remove("hidden");
 
-    const FALLBACK_REDIRECT = "https://sites.google.com/view/sijuana/home";
-    try{ localStorage.setItem('skip_auto_redirect','1'); }catch(e){}
-    const redirectTimeout = setTimeout(() => {
-        try { localStorage.removeItem('supabase.auth.token'); } catch(e){}
-        try { localStorage.removeItem('sb:token'); } catch(e){}
-        window.top.location.href = FALLBACK_REDIRECT;
-    }, 2000);
+    const HOME_PAGE = "https://sites.google.com/view/siijuana/home";
 
     try {
-        const {error} = await supabaseClient.auth.signOut();
-
-        try { localStorage.removeItem('supabase.auth.token'); } catch(e){}
-        try { localStorage.removeItem('sb:token'); } catch(e){}
+        const { error } = await supabaseClient.auth.signOut();
 
         if(error) {
             document.getElementById("message").innerText = "Logging out...";
             console.error("Logout error:", error.message);
-            return;
+        } else {
+            document.getElementById("message").innerText = "Successfully logged out!";
         }
 
-        document.getElementById("message").innerText = "Successfully logged out!";
-        clearTimeout(redirectTimeout);
-
-        try{ localStorage.setItem('skip_auto_redirect','1'); }catch(e){}
+        // Redirect after short delay
         setTimeout(() => {
-            window.top.location.href = FALLBACK_REDIRECT;
+            window.top.location.href = HOME_PAGE;
         }, 800);
     } catch(err) {
-        document.getElementById("message").innerText = "Redirecting...";
         console.error("Unexpected error:", err);
+        setTimeout(() => {
+            window.top.location.href = HOME_PAGE;
+        }, 800);
     }
 }
 </script>
