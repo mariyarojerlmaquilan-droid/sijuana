@@ -11,7 +11,7 @@
 
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background:linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+    background: linear-gradient(135deg, #6b73ff 0%, #f6a5c0 100%);
     min-height:100vh;
     display:flex;
     align-items:center;
@@ -22,11 +22,11 @@ body {
 .box {
     max-width:420px; 
     width:100%;
-    background:#ffffff; 
+    background:white; 
     padding:40px; 
-    border-radius:16px;
+    border-radius:15px;
     text-align:center; 
-    box-shadow:0 20px 60px rgba(0,0,0,0.18);
+    box-shadow:0 20px 60px rgba(0,0,0,0.25);
     animation:slideIn 0.4s ease-out;
 }
 
@@ -36,7 +36,7 @@ body {
 }
 
 h2 { 
-    color:#1f2933; 
+    color:#333; 
     margin-bottom:30px;
     font-size:28px;
     font-weight:600;
@@ -46,79 +46,61 @@ input {
     width:100%; 
     padding:14px 16px; 
     margin:12px 0; 
-    border:2px solid #e5e7eb; 
-    border-radius:10px;
+    border:2px solid #e5e5e5; 
+    border-radius:8px;
     font-size:15px;
     transition:all 0.3s ease;
-    font-family:inherit;
-    background:#f9fafb;
 }
 
 input:focus { 
     outline:none;
-    border-color:#e4a6b7; /* subtle pink accent */
-    box-shadow:0 0 0 3px rgba(228, 166, 183, 0.25);
-    background:#ffffff;
-}
-
-input::placeholder {
-    color:#9ca3af;
+    border-color:#f08bb4;
+    box-shadow:0 0 0 3px rgba(240, 139, 180, 0.2);
 }
 
 button { 
     width:100%; 
     padding:14px; 
-    background:linear-gradient(135deg, #4b5563 0%, #374151 100%);
-    color:#ffffff; 
+    background: linear-gradient(135deg, #6b73ff 0%, #f08bb4 100%);
+    color:white; 
     border:none; 
-    border-radius:10px; 
+    border-radius:8px; 
     cursor:pointer;
     font-size:16px;
     font-weight:600;
-    transition:all 0.3s ease;
     margin-top:8px;
 }
 
 button:hover { 
     transform:translateY(-2px);
-    box-shadow:0 12px 30px rgba(0,0,0,0.25);
-}
-
-button:active {
-    transform:translateY(0);
-}
-
-button:disabled {
-    opacity:0.6;
-    cursor:not-allowed;
+    box-shadow:0 10px 25px rgba(240, 139, 180, 0.45);
 }
 
 .link { 
     margin-top:20px; 
     font-size:14px;
-    color:#6b7280;
+    color:#666;
 }
 
 .link a {
-    color:#c08497; /* soft pink link */
+    color:#e76fa3;
     text-decoration:none;
     font-weight:600;
     cursor:pointer;
-    transition:color 0.3s ease;
 }
 
 .link a:hover {
-    color:#a45c75;
+    color:#c94b83;
     text-decoration:underline;
 }
 
 .error { 
-    color:#b91c1c; 
+    color:#b83260; 
     font-size:13px;
     margin-top:10px;
-    padding:12px;
-    background:#fee2e2;
-    border-radius:8px;
+    padding:10px;
+    background:#fde2ea;
+    border-radius:6px;
     display:none;
 }
 
@@ -127,19 +109,13 @@ button:disabled {
 }
 
 .success { 
-    background:linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    background: linear-gradient(135deg, #4fd1c5 0%, #38b2ac 100%);
     color:white; 
     padding:14px; 
     margin-bottom:20px; 
-    border-radius:10px; 
+    border-radius:8px; 
     display:none; 
-    text-align:center;
     font-weight:600;
-    animation:slideIn 0.4s ease-out;
-}
-
-.success:not(:empty) {
-    display:block;
 }
 </style>
 </head>
@@ -148,17 +124,15 @@ button:disabled {
 
 <div id="successMessage" class="success"></div>
 
-<!-- LOGIN BOX -->
 <div id="loginBox" class="box">
     <h2>Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
     <p id="loginError" class="error"></p>
-    <p class="link">No account? <a href="#" onclick="showRegister()">Register</a></p>
+    <p class="link">No account? <a onclick="showRegister()">Register</a></p>
 </div>
 
-<!-- REGISTER BOX -->
 <div id="registerBox" class="box" style="display:none;">
     <h2>Register</h2>
     <input id="newFullname" type="text" placeholder="Full Name">
@@ -167,7 +141,28 @@ button:disabled {
     <input id="newPass" type="password" placeholder="Password">
     <button onclick="register()">Create Account</button>
     <p id="registerError" class="error"></p>
-    <p class="link">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+    <p class="link">Already have an account? <a onclick="showLogin()">Login</a></p>
 </div>
 
-<!-- JS REMAINS UNCHANGED -->
+<script>
+const SUPABASE_URL = "https://vjhoahthcaojzharxbzh.supabase.co";
+const SUPABASE_ANON_KEY =
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA";
+
+const HOME_PAGE = "https://sites.google.com/view/sijuana/home/";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function showRegister(){
+    document.getElementById("registerBox").style.display="block";
+    document.getElementById("loginBox").style.display="none";
+}
+
+function showLogin(){
+    document.getElementById("registerBox").style.display="none";
+    document.getElementById("loginBox").style.display="block";
+}
+</script>
+
+</body>
+</html>
