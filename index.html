@@ -8,106 +8,116 @@
 
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background: #f7f7fb;
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
     padding:20px;
 }
-
 .box {
     max-width:420px; 
     width:100%;
     background:white; 
     padding:40px; 
-    border-radius:12px;
+    border-radius:15px;
     text-align:center; 
-    box-shadow:0 12px 30px rgba(0,0,0,0.08);
+    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    animation:slideIn 0.4s ease-out;
 }
-
+@keyframes slideIn {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+}
 h2 { 
     color:#333; 
     margin-bottom:30px;
-    font-size:26px;
+    font-size:28px;
     font-weight:600;
 }
-
 input { 
     width:100%; 
     padding:14px 16px; 
     margin:12px 0; 
-    border:1px solid #ddd; 
+    border:2px solid #e0e0e0; 
     border-radius:8px;
     font-size:15px;
+    transition:all 0.3s ease;
+    font-family:inherit;
 }
-
 input:focus { 
     outline:none;
-    border-color:#e8a2b8;
-    box-shadow:0 0 0 2px rgba(232, 162, 184, 0.25);
+    border-color:#667eea;
+    box-shadow:0 0 0 3px rgba(102, 126, 234, 0.1);
 }
-
+input::placeholder {
+    color:#999;
+}
 button { 
     width:100%; 
     padding:14px; 
-    background:#e8a2b8;
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color:white; 
     border:none; 
     border-radius:8px; 
     cursor:pointer;
     font-size:16px;
     font-weight:600;
+    transition:all 0.3s ease;
     margin-top:8px;
 }
-
 button:hover { 
-    background:#dd8fa8;
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(102, 126, 234, 0.4);
 }
-
+button:active {
+    transform:translateY(0);
+}
+button:disabled {
+    opacity:0.6;
+    cursor:not-allowed;
+}
 .link { 
     margin-top:20px; 
     font-size:14px;
     color:#666;
 }
-
 .link a {
-    color:#d87093;
+    color:#667eea;
     text-decoration:none;
     font-weight:600;
+    cursor:pointer;
+    transition:color 0.3s ease;
 }
-
 .link a:hover {
+    color:#764ba2;
     text-decoration:underline;
 }
-
 .error { 
-    color:#b8456b; 
+    color:#e74c3c; 
     font-size:13px;
     margin-top:10px;
     padding:10px;
-    background:#fde9ef;
+    background:#fadbd8;
     border-radius:6px;
     display:none;
 }
-
 .error:not(:empty) {
     display:block;
 }
-
 .success { 
-    background:#4caf93;
+    background:linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
     color:white; 
     padding:14px; 
     margin-bottom:20px; 
     border-radius:8px; 
     display:none; 
+    text-align:center;
     font-weight:600;
+    animation:slideIn 0.4s ease-out;
 }
-
 .success:not(:empty) {
     display:block;
 }
@@ -118,15 +128,18 @@ button:hover {
 
 <div id="successMessage" class="success"></div>
 
+
+<!-- LOGIN BOX -->
 <div id="loginBox" class="box">
     <h2>Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
     <p id="loginError" class="error"></p>
-    <p class="link">No account? <a onclick="showRegister()">Register</a></p>
+    <p class="link">No account? <a href="#" onclick="showRegister()">Register</a></p>
 </div>
 
+<!-- REGISTER BOX -->
 <div id="registerBox" class="box" style="display:none;">
     <h2>Register</h2>
     <input id="newFullname" type="text" placeholder="Full Name">
@@ -135,16 +148,144 @@ button:hover {
     <input id="newPass" type="password" placeholder="Password">
     <button onclick="register()">Create Account</button>
     <p id="registerError" class="error"></p>
-    <p class="link">Already have an account? <a onclick="showLogin()">Login</a></p>
+    <p class="link">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
 </div>
 
 <script>
-const SUPABASE_URL = "https://vjhoahthcaojzharxbzh.supabase.co";
-const SUPABASE_ANON_KEY =
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA";
+// ===== Supabase Setup =====
+const SUPABASE_URL = "https://vjhoahthcaojzharxbzh.supabase.co";    
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA"; 
 
+// Set this to your Google Sites published homepage
 const HOME_PAGE = "https://sites.google.com/view/sijuana/home/";
+
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Toggle Boxes
+function showRegister(){ document.getElementById("registerBox").style.display="block"; document.getElementById("loginBox").style.display="none"; }
+function showLogin(){ document.getElementById("registerBox").style.display="none"; document.getElementById("loginBox").style.display="block"; }
+
+// Loading effect
+function setLoading(btn,isLoading,text){ btn.disabled=isLoading; btn.innerText=isLoading?"Please wait...":text; }
+
+// Register
+async function register(){
+    let fullname=document.getElementById("newFullname").value;
+    let phone=document.getElementById("newPhone").value;
+    let email=document.getElementById("newUser").value;
+    let password=document.getElementById("newPass").value;
+    let btn=document.querySelector("#registerBox button");
+    setLoading(btn,true,"Create Account");
+
+    if(!fullname||!phone||!email||!password){ 
+        document.getElementById("registerError").innerText="Fill all fields"; 
+        setLoading(btn,false,"Create Account"); 
+        return; 
+    }
+
+    // 1. Create user in Supabase auth and store metadata
+    const {data, error} = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options:{
+            data:{
+                fullname: fullname,
+                phone: phone
+            }
+        }
+    });
+
+    if(error){ 
+        document.getElementById("registerError").innerText = error.message; 
+        setLoading(btn,false,"Create Account"); 
+        return; 
+    }
+
+    // 2. Insert user into "profiles" table
+    if (data.user) {
+        await supabaseClient.from("profiles").insert({
+            id: data.user.id,
+            fullname: fullname,
+            phone: phone,
+            email: email
+        });
+    }
+
+    document.getElementById("registerError").innerText="";
+    document.getElementById("successMessage").innerText="Account created! Please check your email to confirm.";
+    document.getElementById("successMessage").style.display="block";
+
+    setTimeout(()=>{
+        document.getElementById("successMessage").style.display="none";
+        showLogin();
+    },2000);
+
+    setLoading(btn,false,"Create Account");
+}
+
+// Login
+async function login(){
+    let email=document.getElementById("loginUser").value;
+    let password=document.getElementById("loginPass").value;
+    let btn=document.querySelector("#loginBox button");
+    setLoading(btn,true,"Login");
+
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+    if(error){ 
+        document.getElementById("loginError").innerText=error.message; 
+        setLoading(btn,false,"Login"); 
+        return; 
+    }
+
+    // Retrieve user metadata (fullname, phone)
+    const user = data.user;
+    console.log('Login successful!');
+    console.log('User ID:', user.id);
+    console.log('User Email:', user.email);
+    console.log('User Metadata:', user.user_metadata);
+    
+    if(user.user_metadata){
+        console.log('Full Name:', user.user_metadata.fullname);
+        console.log('Phone:', user.user_metadata.phone);
+    }
+
+    setLoading(btn,false,"Login");
+    document.getElementById("loginError").innerText="";
+    document.getElementById("successMessage").innerText="Welcome! Login successful!";
+    document.getElementById("successMessage").style.display="block";
+
+    // Redirect top-level window to Google Sites homepage
+    setTimeout(()=>{ window.top.location.href = HOME_PAGE; },1000);
+}
+
+// Auto-check session
+supabaseClient.auth.getSession().then(({data})=>{
+    if(data.session){
+        // If a one-time skip flag is set, clear it and do not redirect.
+        try{
+            const skip = localStorage.getItem('skip_auto_redirect');
+            if(skip){
+                localStorage.removeItem('skip_auto_redirect');
+                return;
+            }
+        }catch(e){}
+
+        // Only auto-redirect when the page is not embedded.
+        if(window.top === window.self){
+            window.top.location.href = HOME_PAGE;
+            return;
+        }
+
+        // If embedded, show a small banner instructing user to open in full window.
+        try{
+            const banner = document.createElement('div');
+            banner.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#fff8c4;color:#856404;padding:10px 14px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.15);z-index:9999;font-weight:600;font-family:inherit;';
+            banner.innerHTML = 'You are already logged in. <a href="' + HOME_PAGE + '" target="_top" style="color:#0b5fff;text-decoration:underline;margin-left:8px;">Open site</a>';
+            document.body.appendChild(banner);
+            setTimeout(()=>{ banner.style.opacity='0'; banner.style.transition='opacity 0.4s'; setTimeout(()=>banner.remove(),1200); }, 8000);
+        }catch(e){}
+    }
+});
 </script>
 
 </body>
