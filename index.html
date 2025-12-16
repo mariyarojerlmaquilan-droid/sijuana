@@ -29,7 +29,7 @@
 
 body{
     font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-    background:var(--bg-main);
+    background:linear-gradient(135deg, rgba(244,163,180,0.35), rgba(246,247,251,0.9));
     min-height:100vh;
     display:flex;
     align-items:center;
@@ -41,11 +41,12 @@ body{
 .box{
     max-width:420px;
     width:100%;
-    background:var(--card-bg);
+    background:rgba(255,255,255,0.96);
     padding:40px;
-    border-radius:12px;
+    border-radius:14px;
     text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    box-shadow:0 20px 40px rgba(0,0,0,.12);
+    backdrop-filter:blur(6px);
     animation:fadeIn .4s ease-out;
 }
 
