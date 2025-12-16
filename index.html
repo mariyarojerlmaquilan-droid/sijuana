@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Login + Sign Up</title>
@@ -7,121 +7,141 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    background:#f5f5f5; /* soft neutral background */
+:root{
+    --bg-main:#f6f7fb;
+    --card-bg:#ffffff;
+    --text-main:#2f2f33;
+    --text-muted:#7a7a85;
+
+    --accent:#f4a3b4;
+    --accent-hover:#ee8fa4;
+    --accent-glow:rgba(244,163,180,.25);
+
+    --border:#dcdce2;
+    --input-bg:#fbfbfd;
+
+    --error-bg:#fde8ea;
+    --error-text:#c0392b;
+    --success-bg:#f4a3b4;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    background:var(--bg-main);
     min-height:100vh;
     display:flex;
     align-items:center;
     justify-content:center;
     padding:20px;
+    color:var(--text-main);
 }
-.box {
-    max-width:420px; 
+
+.box{
+    max-width:420px;
     width:100%;
-    background:#ffffff; 
-    padding:40px; 
+    background:var(--card-bg);
+    padding:40px;
     border-radius:12px;
-    text-align:center; 
-    box-shadow:0 10px 30px rgba(0,0,0,0.08); /* softer shadow */
-    animation:slideIn 0.4s ease-out;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    animation:fadeIn .4s ease-out;
 }
-@keyframes slideIn {
-    from { opacity:0; transform:translateY(20px); }
-    to { opacity:1; transform:translateY(0); }
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
 }
-h2 { 
-    color:#333; 
+
+h2{
     margin-bottom:25px;
     font-size:26px;
     font-weight:600;
 }
-input { 
-    width:100%; 
-    padding:12px 14px; 
-    margin:10px 0; 
-    border:1.5px solid #ccc; /* neutral gray border */
+
+input{
+    width:100%;
+    padding:12px 14px;
+    margin:10px 0;
+    border:1.5px solid var(--border);
     border-radius:8px;
     font-size:15px;
-    transition:all 0.3s ease;
-    font-family:inherit;
-    background:#fafafa; /* very light gray background */
+    background:var(--input-bg);
+    transition:.3s;
 }
-input:focus { 
+
+input::placeholder{color:var(--text-muted)}
+
+input:focus{
     outline:none;
-    border-color:#ff99a1; /* soft pink accent */
-    box-shadow:0 0 0 3px rgba(255,153,161,0.15);
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-glow);
 }
-input::placeholder {
-    color:#999;
-}
-button { 
-    width:100%; 
-    padding:12px; 
-    background:#ff99a1; /* soft pink button */
-    color:white; 
-    border:none; 
-    border-radius:8px; 
-    cursor:pointer;
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    border-radius:8px;
     font-size:15px;
     font-weight:600;
-    transition:all 0.3s ease;
-    margin-top:8px;
+    cursor:pointer;
+    transition:.3s;
 }
-button:hover { 
-    background:#ff8088; /* slightly darker pink on hover */
-    box-shadow:0 6px 18px rgba(255,128,136,0.25);
+
+button:hover{
+    background:var(--accent-hover);
+    box-shadow:0 6px 18px var(--accent-glow);
 }
-button:active {
-    transform:translateY(0);
-}
-button:disabled {
-    opacity:0.6;
+
+button:disabled{
+    opacity:.6;
     cursor:not-allowed;
 }
-.link { 
-    margin-top:15px; 
+
+.link{
+    margin-top:15px;
     font-size:14px;
-    color:#666;
+    color:var(--text-muted);
 }
-.link a {
-    color:#ff99a1;
-    text-decoration:none;
+
+.link a{
+    color:var(--accent);
     font-weight:600;
-    cursor:pointer;
-    transition:color 0.3s ease;
+    text-decoration:none;
 }
-.link a:hover {
-    color:#ff8088; 
+
+.link a:hover{
+    color:var(--accent-hover);
     text-decoration:underline;
 }
-.error { 
-    color:#e74c3c; 
-    font-size:13px;
+
+.error{
     margin-top:10px;
     padding:8px;
-    background:#fce4e4;
+    font-size:13px;
+    background:var(--error-bg);
+    color:var(--error-text);
     border-radius:6px;
     display:none;
 }
-.error:not(:empty) {
-    display:block;
-}
-.success { 
-    background:#ffb3b9; /* soft pink success */
-    color:white; 
-    padding:12px; 
-    margin-bottom:20px; 
-    border-radius:8px; 
-    display:none; 
-    text-align:center;
+
+.error:not(:empty){display:block}
+
+.success{
+    background:var(--success-bg);
+    color:#fff;
+    padding:12px;
+    margin-bottom:20px;
+    border-radius:8px;
     font-weight:600;
-    animation:slideIn 0.4s ease-out;
+    display:none;
 }
-.success:not(:empty) {
-    display:block;
-}
+.success:not(:empty){display:block}
 </style>
 </head>
 
@@ -129,17 +149,15 @@ button:disabled {
 
 <div id="successMessage" class="success"></div>
 
-<!-- LOGIN BOX -->
 <div id="loginBox" class="box">
     <h2>Login</h2>
     <input id="loginUser" type="email" placeholder="Email">
     <input id="loginPass" type="password" placeholder="Password">
     <button onclick="login()">Login</button>
     <p id="loginError" class="error"></p>
-    <p class="link">No account? <a href="#" onclick="showRegister()">Register</a></p>
+    <p class="link">No account? <a onclick="showRegister()">Register</a></p>
 </div>
 
-<!-- REGISTER BOX -->
 <div id="registerBox" class="box" style="display:none;">
     <h2>Register</h2>
     <input id="newFullname" type="text" placeholder="Full Name">
@@ -148,100 +166,86 @@ button:disabled {
     <input id="newPass" type="password" placeholder="Password">
     <button onclick="register()">Create Account</button>
     <p id="registerError" class="error"></p>
-    <p class="link">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+    <p class="link">Already have an account? <a onclick="showLogin()">Login</a></p>
 </div>
 
 <script>
-// ===== Supabase Setup =====
-const SUPABASE_URL = "https://vjhoahthcaojzharxbzh.supabase.co";    
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA"; 
+const SUPABASE_URL="https://vjhoahthcaojzharxbzh.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA";
+const HOME_PAGE="https://sites.google.com/view/sijuana/home/";
 
-const HOME_PAGE = "https://sites.google.com/view/sijuana/home/";
+const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+function showRegister(){
+    loginBox.style.display="none";
+    registerBox.style.display="block";
+}
 
-function showRegister(){ document.getElementById("registerBox").style.display="block"; document.getElementById("loginBox").style.display="none"; }
-function showLogin(){ document.getElementById("registerBox").style.display="none"; document.getElementById("loginBox").style.display="block"; }
-function setLoading(btn,isLoading,text){ btn.disabled=isLoading; btn.innerText=isLoading?"Please wait...":text; }
+function showLogin(){
+    registerBox.style.display="none";
+    loginBox.style.display="block";
+}
+
+function setLoading(btn,state,text){
+    btn.disabled=state;
+    btn.innerText=state?"Please wait…":text;
+}
 
 async function register(){
-    let fullname=document.getElementById("newFullname").value;
-    let phone=document.getElementById("newPhone").value;
-    let email=document.getElementById("newUser").value;
-    let password=document.getElementById("newPass").value;
-    let btn=document.querySelector("#registerBox button");
+    const fullname=newFullname.value;
+    const phone=newPhone.value;
+    const email=newUser.value;
+    const password=newPass.value;
+    const btn=document.querySelector("#registerBox button");
+
+    if(!fullname||!phone||!email||!password){
+        registerError.innerText="Fill all fields";
+        return;
+    }
+
     setLoading(btn,true,"Create Account");
 
-    if(!fullname||!phone||!email||!password){ 
-        document.getElementById("registerError").innerText="Fill all fields"; 
-        setLoading(btn,false,"Create Account"); 
-        return; 
-    }
-
-    const {data, error} = await supabaseClient.auth.signUp({
-        email,
-        password,
-        options:{data:{fullname: fullname, phone: phone}}
+    const {data,error}=await supabaseClient.auth.signUp({
+        email,password,
+        options:{data:{fullname,phone}}
     });
 
-    if(error){ 
-        document.getElementById("registerError").innerText = error.message; 
-        setLoading(btn,false,"Create Account"); 
-        return; 
+    if(error){
+        registerError.innerText=error.message;
+        setLoading(btn,false,"Create Account");
+        return;
     }
 
-    if (data.user) {
+    if(data.user){
         await supabaseClient.from("profiles").insert({
-            id: data.user.id,
-            fullname: fullname,
-            phone: phone,
-            email: email
+            id:data.user.id,
+            fullname,phone,email
         });
     }
 
-    document.getElementById("registerError").innerText="";
-    document.getElementById("successMessage").innerText="Account created! Please check your email to confirm.";
-    document.getElementById("successMessage").style.display="block";
-
-    setTimeout(()=>{
-        document.getElementById("successMessage").style.display="none";
-        showLogin();
-    },2000);
-
+    successMessage.innerText="Account created! Check your email to confirm.";
+    setTimeout(()=>{successMessage.innerText="";showLogin();},2000);
     setLoading(btn,false,"Create Account");
 }
 
 async function login(){
-    let email=document.getElementById("loginUser").value;
-    let password=document.getElementById("loginPass").value;
-    let btn=document.querySelector("#loginBox button");
+    const btn=document.querySelector("#loginBox button");
     setLoading(btn,true,"Login");
 
-    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
-    if(error){ 
-        document.getElementById("loginError").innerText=error.message; 
-        setLoading(btn,false,"Login"); 
-        return; 
+    const {error}=await supabaseClient.auth.signInWithPassword({
+        email:loginUser.value,
+        password:loginPass.value
+    });
+
+    if(error){
+        loginError.innerText=error.message;
+        setLoading(btn,false,"Login");
+        return;
     }
 
-    const user = data.user;
-    setLoading(btn,false,"Login");
-    document.getElementById("loginError").innerText="";
-    document.getElementById("successMessage").innerText="Welcome! Login successful!";
-    document.getElementById("successMessage").style.display="block";
-
-    setTimeout(()=>{ window.top.location.href = HOME_PAGE; },1000);
+    successMessage.innerText="Welcome! Login successful.";
+    setTimeout(()=>window.top.location.href=HOME_PAGE,1000);
 }
-
-supabaseClient.auth.getSession().then(({data})=>{
-    if(data.session){
-        try{
-            const skip = localStorage.getItem('skip_auto_redirect');
-            if(skip){ localStorage.removeItem('skip_auto_redirect'); return; }
-        }catch(e){}
-        if(window.top === window.self){ window.top.location.href = HOME_PAGE; return; }
-    }
-});
 </script>
 
 </body>
