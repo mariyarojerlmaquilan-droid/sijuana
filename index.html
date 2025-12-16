@@ -89,7 +89,7 @@ button{
     border-radius:8px;
     font-size:15px;
     font-weight:600;
-    cursor:pointer;
+    cursor:pointer !important; /* required for Google Sites */
     transition:.3s;
 }
 
@@ -100,7 +100,7 @@ button:hover{
 
 button:disabled{
     opacity:.6;
-    cursor:not-allowed;
+    cursor:not-allowed !important;
 }
 
 .link{
@@ -113,6 +113,7 @@ button:disabled{
     color:var(--accent);
     font-weight:600;
     text-decoration:none;
+    cursor:pointer !important;
 }
 
 .link a:hover{
@@ -141,6 +142,7 @@ button:disabled{
     font-weight:600;
     display:none;
 }
+
 .success:not(:empty){display:block}
 </style>
 </head>
@@ -170,81 +172,88 @@ button:disabled{
 </div>
 
 <script>
-const SUPABASE_URL="https://vjhoahthcaojzharxbzh.supabase.co";
-const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA";
-const HOME_PAGE="https://sites.google.com/view/sijuana/home/";
+const SUPABASE_URL = "https://vjhoahthcaojzharxbzh.supabase.co";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_KEY_HERE";
+const HOME_PAGE = "https://sites.google.com/view/sijuana/home/";
 
-const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 function showRegister(){
-    loginBox.style.display="none";
-    registerBox.style.display="block";
+    loginBox.style.display = "none";
+    registerBox.style.display = "block";
 }
 
 function showLogin(){
-    registerBox.style.display="none";
-    loginBox.style.display="block";
+    registerBox.style.display = "none";
+    loginBox.style.display = "block";
 }
 
-function setLoading(btn,state,text){
-    btn.disabled=state;
-    btn.innerText=state?"Please wait…":text;
+function setLoading(btn, state, text){
+    btn.disabled = state;
+    btn.innerText = state ? "Please wait…" : text;
 }
 
 async function register(){
-    const fullname=newFullname.value;
-    const phone=newPhone.value;
-    const email=newUser.value;
-    const password=newPass.value;
-    const btn=document.querySelector("#registerBox button");
+    const fullname = newFullname.value;
+    const phone = newPhone.value;
+    const email = newUser.value;
+    const password = newPass.value;
+    const btn = document.querySelector("#registerBox button");
 
-    if(!fullname||!phone||!email||!password){
-        registerError.innerText="Fill all fields";
+    if(!fullname || !phone || !email || !password){
+        registerError.innerText = "Fill all fields";
         return;
     }
 
-    setLoading(btn,true,"Create Account");
+    setLoading(btn, true, "Create Account");
 
-    const {data,error}=await supabaseClient.auth.signUp({
-        email,password,
-        options:{data:{fullname,phone}}
+    const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options:{ data:{ fullname, phone } }
     });
 
     if(error){
-        registerError.innerText=error.message;
-        setLoading(btn,false,"Create Account");
+        registerError.innerText = error.message;
+        setLoading(btn, false, "Create Account");
         return;
     }
 
     if(data.user){
         await supabaseClient.from("profiles").insert({
-            id:data.user.id,
-            fullname,phone,email
+            id: data.user.id,
+            fullname,
+            phone,
+            email
         });
     }
 
-    successMessage.innerText="Account created! Check your email to confirm.";
-    setTimeout(()=>{successMessage.innerText="";showLogin();},2000);
-    setLoading(btn,false,"Create Account");
+    successMessage.innerText = "Account created! Check your email to confirm.";
+    setTimeout(() => {
+        successMessage.innerText = "";
+        showLogin();
+    }, 2000);
+
+    setLoading(btn, false, "Create Account");
 }
 
 async function login(){
-    const btn=document.querySelector("#loginBox button");
-    setLoading(btn,true,"Login");
+    const btn = document.querySelector("#loginBox button");
+    setLoading(btn, true, "Login");
 
-    const {error}=await supabaseClient.auth.signInWithPassword({
-        email:loginUser.value,
-        password:loginPass.value
+    const { error } = await supabaseClient.auth.signInWithPassword({
+        email: loginUser.value,
+        password: loginPass.value
     });
 
     if(error){
-        loginError.innerText=error.message;
-        setLoading(btn,false,"Login");
+        loginError.innerText = error.message;
+        setLoading(btn, false, "Login");
         return;
     }
 
-    successMessage.innerText="Welcome! Login successful.";
-    setTimeout(()=>window.top.location.href=HOME_PAGE,1000);
+    successMessage.innerText = "Welcome! Login successful.";
+    setTimeout(() => window.top.location.href = HOME_PAGE, 1000);
 }
 </script>
 
